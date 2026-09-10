@@ -666,7 +666,7 @@ function App() {
                     autoComplete="new-password"
                     placeholder={
                       mode === "register"
-                        ? "e.g. Pass@1234 (Min 8 chars, 1 uppercase, 1 symbol)"
+                        ? "Create a Strong Password"
                         : "Enter your password"
                     }
                     required
