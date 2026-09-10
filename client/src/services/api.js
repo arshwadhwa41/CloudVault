@@ -1,10 +1,10 @@
 import axios from "axios";
 
 // Production me relative path "/api" use hoga, dev me fallback localhost
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
 const API = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: "/api",
 });
 
 API.interceptors.request.use(
