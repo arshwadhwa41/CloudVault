@@ -27,7 +27,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/files", fileRouter);
 app.use("/api/users", userRouter);
 
-// API Status Route (Shifted to /api)
+// API Status Route
 app.get("/api", (request, response) => {
   response.status(200).json({
     success: true,
@@ -39,7 +39,8 @@ app.get("/api", (request, response) => {
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/dist")));
 
-  app.get("*", (req, res, next) => {
+  // Express v5 Compatible Catch-All Route: (.*)
+  app.get("(.*)", (req, res, next) => {
     if (req.path.startsWith("/api")) {
       return next();
     }
