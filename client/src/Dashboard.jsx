@@ -3,7 +3,6 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import API from "./services/api";
 import { getFileThumbnail } from "./utils/thumbnailHelper";
 
-
 function DashBoard({ user: initialUser, onLogout }) {
   const fileInputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
@@ -22,7 +21,7 @@ function DashBoard({ user: initialUser, onLogout }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [aiLensQuery, setAiLensQuery] = useState("");
-  
+
   // Share Modal State
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareExpiryDays, setShareExpiryDays] = useState("7");
@@ -448,6 +447,8 @@ function DashBoard({ user: initialUser, onLogout }) {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
+  const isNewUser = files.length === 0;
+
   return (
     <div
       className={`gemini-app-container ${isDarkMode ? "dark-theme" : "light-theme"}`}
@@ -568,8 +569,17 @@ function DashBoard({ user: initialUser, onLogout }) {
           <div className="hero-text">
             <p className="gemini-chip">WORKSPACE</p>
             <h1>
-              Welcome back,{" "}
-              <span className="gemini-gradient-text">{firstName}</span>
+              {isNewUser ? (
+                <>
+                  Get Started,{" "}
+                  <span className="gemini-gradient-text">{firstName}</span>
+                </>
+              ) : (
+                <>
+                  Welcome Back,{" "}
+                  <span className="gemini-gradient-text">{firstName}</span>
+                </>
+              )}
             </h1>
             <br></br>
             <section className="ai-image-lens-section">
