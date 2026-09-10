@@ -39,8 +39,8 @@ app.get("/api", (request, response) => {
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/dist")));
 
-  // Express v5 Compatible Catch-All Route: (.*)
-  app.get("(.*)", (req, res, next) => {
+  // Express 5 Compatible Catch-All Route (RegExp literal use karke)
+  app.get(/.*/, (req, res, next) => {
     if (req.path.startsWith("/api")) {
       return next();
     }
