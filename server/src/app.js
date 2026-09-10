@@ -6,11 +6,13 @@ import healthRouter from "./routes/healthRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import fileRouter from "./routes/fileRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import { fileURLToPath } from "url";
 
 const app = express();
 
-// ES Module mein __dirname setup
-const __dirname = path.resolve();
+// ES Module mein robust __dirname setup
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Middlewares setup
 app.use(
@@ -35,16 +37,19 @@ app.get("/api", (request, response) => {
   });
 });
 
+// Static build folder location
+const clientBuildPath = path.resolve(__dirname, "../../client/dist");
+
 // Production Mode: Static React Serve
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../client/dist")));
+  app.use(express.static(clientBuildPath));
 
-  // Express 5 Compatible Catch-All Route (RegExp literal use karke)
+  // Catch-All Route for Single Page Application
   app.get(/.*/, (req, res, next) => {
     if (req.path.startsWith("/api")) {
       return next();
     }
-    res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"));
+    res.sendFile(path.join(clientBuildPath, "index.html"));
   });
 } else {
   app.get("/", (request, response) => {
@@ -56,10 +61,10 @@ if (process.env.NODE_ENV === "production") {
 }
 
 // 404 Handler for Unhandled API Routes
-app.use((req, res) => {
+app.use("/api/*", (req, res) => {
   res.status(404).json({
     success: false,
-    message: "Route not found",
+    message: "API Route not found",
   });
 });
 
