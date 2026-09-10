@@ -1,51 +1,60 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 import env from "./config/env.js";
 import healthRouter from "./routes/healthRoutes.js";
-// ye import authentication routes ko main Express application mein available karega.
-// Import authentication routes.
 import authRouter from "./routes/authRoutes.js";
-
-// File routes import kar rahe hain.
 import fileRouter from "./routes/fileRoutes.js";
-
-// User routes import kar rahe hain.
 import userRouter from "./routes/userRoutes.js";
 
 const app = express();
 
+// ES Module mein __dirname setup
+const __dirname = path.resolve();
+
 // Middlewares setup
 app.use(
   cors({
-    origin: env.clientUrl,
+    origin: env.clientUrl || "*",
   })
 );
 
 app.use(express.json());
 
-// ye code health aur authentication dono route groups ko Express application mein attach karta hai.
-// Register the health route.
+// API Routes
 app.use("/api/health", healthRouter);
-
-// is line ke baad /api/auth/register request authRouter ke paas jayegi.
-// Register authentication endpoints.
 app.use("/api/auth", authRouter);
-
-// Protected file endpoints register kar rahe hain.
 app.use("/api/files", fileRouter);
-
-// Protected user endpoints register kar rahe hain.
 app.use("/api/users", userRouter);
 
-// Add a response for the backend root URL.
-app.get("/", (request, response) => {
+// API Status Route (Shifted to /api)
+app.get("/api", (request, response) => {
   response.status(200).json({
     success: true,
     message: "Digital Asset API is running",
   });
 });
 
-// 404 Handler - Unhandled routes
+// Production Mode: Static React Serve
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api")) {
+      return next();
+    }
+    res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"));
+  });
+} else {
+  app.get("/", (request, response) => {
+    response.status(200).json({
+      success: true,
+      message: "Digital Asset API is running in Development Mode",
+    });
+  });
+}
+
+// 404 Handler for Unhandled API Routes
 app.use((req, res) => {
   res.status(404).json({
     success: false,
