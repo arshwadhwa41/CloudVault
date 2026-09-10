@@ -2052,7 +2052,7 @@ button:active,
    ------------------------------------------------------------ */
 
 .ai-image-lens-box {
-  width: min(890px, 100%);
+  width: min(1550px, 100%);
   min-height: 64px;
 
   display: flex;
