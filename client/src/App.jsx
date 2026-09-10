@@ -701,7 +701,7 @@ function App() {
                   >
                     {showPassword
                       ? "Hide Password"
-                      : "👁️"}
+                      : "Show Password"}
                   </button>
                 </div>
               </label>
@@ -799,7 +799,7 @@ function App() {
                   >
                     {showPassword
                       ? "Hide Password"
-                      : "👁️"}
+                      : "Show Password"}
                   </button>
                 </div>
               </label>

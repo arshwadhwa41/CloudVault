@@ -67,6 +67,12 @@ const fileSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    
+    //Tags for vision key
+    tags:{
+      type:[String],
+      default:[]
+    },
   },
   {
     // createdAt aur updatedAt automatically add honge.

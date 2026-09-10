@@ -2018,3 +2018,486 @@ button:active,
     transform: scale(1) translateY(0);
   }
 }
+
+
+/* ============================================================
+   AI IMAGE LENSE
+   ------------------------------------------------------------
+   Gemini-inspired visual search bar.
+
+   Existing dashboard CSS ko intentionally touch nahi kiya gaya.
+   Ye classes completely new hain.
+   ============================================================ */
+
+.ai-image-lens-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /*
+   * Welcome back section ke upar breathing space.
+   * Existing hero ka layout disturb nahi hoga.
+   */
+  margin: 4px 0 28px;
+
+  position: relative;
+  z-index: 5;
+}
+
+
+/* ------------------------------------------------------------
+   Main AI Search Container
+   ------------------------------------------------------------ */
+
+.ai-image-lens-box {
+  width: min(720px, 100%);
+  min-height: 64px;
+
+  display: flex;
+  align-items: center;
+
+  position: relative;
+
+  padding: 7px 10px 7px 18px;
+
+  border-radius: 22px;
+
+  /*
+   * Gemini-style soft glass surface.
+   */
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.92),
+      rgba(248, 250, 255, 0.88)
+    );
+
+  /*
+   * Subtle purple / blue AI border.
+   */
+  border: 1px solid rgba(99, 102, 241, 0.22);
+
+  /*
+   * Soft AI glow.
+   */
+  box-shadow:
+    0 12px 35px rgba(99, 102, 241, 0.10),
+    0 0 0 1px rgba(168, 85, 247, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+
+
+/*
+ * Hover par halka Gemini-style lift.
+ */
+.ai-image-lens-box:hover {
+  transform: translateY(-1px);
+
+  border-color: rgba(99, 102, 241, 0.38);
+
+  box-shadow:
+    0 16px 42px rgba(99, 102, 241, 0.15),
+    0 0 25px rgba(168, 85, 247, 0.08);
+}
+
+
+/*
+ * Input focus hone par stronger AI glow.
+ */
+.ai-image-lens-box:focus-within {
+  border-color: rgba(99, 102, 241, 0.55);
+
+  box-shadow:
+    0 16px 45px rgba(99, 102, 241, 0.18),
+    0 0 0 4px rgba(99, 102, 241, 0.08),
+    0 0 30px rgba(168, 85, 247, 0.10);
+}
+
+
+/* ------------------------------------------------------------
+   AI Sparkle Icon
+   ------------------------------------------------------------ */
+
+.ai-image-lens-icon {
+  width: 40px;
+  height: 40px;
+
+  flex: 0 0 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 13px;
+
+  color: #6366f1;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.12),
+      rgba(168, 85, 247, 0.14)
+    );
+
+  box-shadow:
+    inset 0 0 0 1px rgba(99, 102, 241, 0.08);
+
+  position: relative;
+}
+
+
+/*
+ * Small animated glow around AI icon.
+ */
+.ai-image-lens-icon::before {
+  content: "";
+
+  position: absolute;
+  inset: -3px;
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.18),
+      rgba(168, 85, 247, 0.18),
+      rgba(6, 182, 212, 0.12)
+    );
+
+  filter: blur(8px);
+
+  opacity: 0.45;
+
+  z-index: -1;
+
+  animation: aiLensGlow 3s ease-in-out infinite;
+}
+
+
+/* ------------------------------------------------------------
+   Search Input
+   ------------------------------------------------------------ */
+
+.ai-image-lens-input {
+  flex: 1;
+
+  width: 100%;
+  min-width: 0;
+
+  margin-left: 13px;
+
+  padding: 10px 8px;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  color: #0f172a;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  letter-spacing: -0.01em;
+}
+
+
+/*
+ * Placeholder deliberately simple rakha hai.
+ *
+ * Isme JS animation ki jagah CSS animation use karne ki
+ * possibility rakhi gayi hai without touching existing logic.
+ */
+.ai-image-lens-input::placeholder {
+  color: #64748b;
+  opacity: 0.82;
+}
+
+
+/* ------------------------------------------------------------
+   Clear Button
+   ------------------------------------------------------------ */
+
+.ai-image-lens-clear {
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 5px;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: rgba(100, 116, 139, 0.08);
+
+  color: #64748b;
+
+  cursor: pointer;
+
+  font-size: 20px;
+  line-height: 1;
+
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.ai-image-lens-clear:hover {
+  background: rgba(239, 68, 68, 0.10);
+  color: #ef4444;
+  transform: scale(1.05);
+}
+
+
+/* ------------------------------------------------------------
+   AI Badge
+   ------------------------------------------------------------ */
+
+.ai-image-lens-badge {
+  min-height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 0 13px;
+
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.10),
+      rgba(168, 85, 247, 0.12)
+    );
+
+  color: #6366f1;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+
+  user-select: none;
+}
+
+
+/* ------------------------------------------------------------
+   AI Pulse Dot
+   ------------------------------------------------------------ */
+
+.ai-lens-pulse {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #8b5cf6;
+
+  box-shadow:
+    0 0 0 0 rgba(139, 92, 246, 0.4);
+
+  animation: aiLensPulse 2s infinite;
+}
+
+
+/* ------------------------------------------------------------
+   Hint Text
+   ------------------------------------------------------------ */
+
+.ai-image-lens-hint {
+  margin: 9px 0 0;
+
+  font-size: 11px;
+  font-weight: 500;
+
+  color: #64748b;
+
+  text-align: center;
+
+  opacity: 0.82;
+}
+
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+
+.dark-theme .ai-image-lens-box {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(15, 23, 42, 0.88),
+      rgba(30, 27, 75, 0.72)
+    );
+
+  border-color: rgba(129, 140, 248, 0.24);
+
+  box-shadow:
+    0 16px 45px rgba(0, 0, 0, 0.30),
+    0 0 30px rgba(99, 102, 241, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.dark-theme .ai-image-lens-box:hover {
+  border-color: rgba(129, 140, 248, 0.42);
+
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.38),
+    0 0 35px rgba(99, 102, 241, 0.12);
+}
+
+.dark-theme .ai-image-lens-input {
+  color: #f8fafc;
+}
+
+.dark-theme .ai-image-lens-input::placeholder {
+  color: #94a3b8;
+}
+
+.dark-theme .ai-image-lens-icon {
+  color: #a5b4fc;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.18),
+      rgba(168, 85, 247, 0.18)
+    );
+}
+
+.dark-theme .ai-image-lens-badge {
+  color: #a5b4fc;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.15),
+      rgba(168, 85, 247, 0.16)
+    );
+}
+
+.dark-theme .ai-image-lens-hint {
+  color: #94a3b8;
+}
+
+.dark-theme .ai-image-lens-clear {
+  background: rgba(255, 255, 255, 0.07);
+  color: #94a3b8;
+}
+
+
+/* ============================================================
+   AI LENS ANIMATIONS
+   ============================================================ */
+
+@keyframes aiLensGlow {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 0.65;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes aiLensPulse {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(139, 92, 246, 0.45);
+  }
+
+  70% {
+    box-shadow:
+      0 0 0 7px rgba(139, 92, 246, 0);
+  }
+
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(139, 92, 246, 0);
+  }
+}
+
+
+/* ============================================================
+   RESPONSIVE AI LENS
+   ============================================================ */
+
+@media (max-width: 640px) {
+  .ai-image-lens-section {
+    margin: 0 0 24px;
+  }
+
+  .ai-image-lens-box {
+    min-height: 58px;
+    border-radius: 18px;
+
+    padding-left: 10px;
+    padding-right: 8px;
+  }
+
+  .ai-image-lens-icon {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+    border-radius: 11px;
+  }
+
+  .ai-image-lens-input {
+    margin-left: 9px;
+    font-size: 13px;
+  }
+
+  .ai-image-lens-badge {
+    min-height: 34px;
+    padding: 0 9px;
+    border-radius: 10px;
+  }
+
+  .ai-image-lens-hint {
+    font-size: 10px;
+    padding: 0 12px;
+  }
+}
+
+
+@media (max-width: 420px) {
+  .ai-image-lens-badge {
+    display: none;
+  }
+
+  .ai-image-lens-input {
+    font-size: 13px;
+  }
+}
+
+
+/* Reduced motion users ke liye animation disable */
+@media (prefers-reduced-motion: reduce) {
+  .ai-image-lens-icon::before,
+  .ai-lens-pulse {
+    animation: none !important;
+  }
+}
