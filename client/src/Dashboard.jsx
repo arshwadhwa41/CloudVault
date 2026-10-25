@@ -1021,7 +1021,66 @@ function DashBoard({ user: initialUser, onLogout }) {
                   Size: {((previewFile.size || 0) / (1024 * 1024)).toFixed(2)}{" "}
                   MB
                 </span>
+                <button
+                  onClick={() => {
+                    console.log("Full Preview File Object:", previewFile);
 
+                    if (!previewFile) {
+                      alert("Please select a file first.");
+                      return;
+                    }
+
+                    // 1. Token Check
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                      alert(
+                        "Authentication token missing. Please login again.",
+                      );
+                      return;
+                    }
+
+                    // 2. Har possible key fallback check
+                    let rawFileUrl =
+                      previewFile.url ||
+                      previewFile.fileUrl ||
+                      previewFile.filePath ||
+                      previewFile.path ||
+                      previewFile.secure_url ||
+                      "";
+
+                    const fileName =
+                      previewFile.name ||
+                      previewFile.fileName ||
+                      previewFile.originalName ||
+                      previewFile.filename ||
+                      "compressed-file";
+
+                    if (!rawFileUrl) {
+                      alert("File URL is missing from previewFile object!");
+                      return;
+                    }
+
+                    // 3. CLOUDINARY RAW URL CLEANUP FIX:
+                    // Agar file RAW (PDF, Video, TXT) hai, toh url me se pg_1,w_300,h_200,c_fill etc. remove karo
+                    let cleanFileUrl = rawFileUrl;
+                    if (cleanFileUrl.includes("/raw/upload/")) {
+                      cleanFileUrl = cleanFileUrl.replace(
+                        /\/raw\/upload\/.*?\/(v\d+\/)/,
+                        "/raw/upload/$1",
+                      );
+                    }
+
+                    // 4. Token & Cleaned URL ke sath microservice URL construct karo
+                    const microserviceUrl = `http://localhost:5001/?fileUrl=${encodeURIComponent(
+                      cleanFileUrl,
+                    )}&fileName=${encodeURIComponent(fileName)}&token=${encodeURIComponent(token)}`;
+
+                    window.location.href = microserviceUrl;
+                  }}
+                  className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2"
+                >
+                  Compress File
+                </button>
                 <div className="modal-buttons-group">
                   <button
                     className="modal-share-btn"

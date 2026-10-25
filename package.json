@@ -1,8 +1,10 @@
 {
   "name": "cloud-vault-root",
   "version": "1.0.0",
+  "description": "CloudVault - Main Application Root",
+  "type": "module",
   "scripts": {
-    "build": "npm install --prefix server && npm install --prefix client --include=dev && npm run build --prefix client",
+    "build": "npm install --prefix server && npm install --prefix client --include=dev && npm run build --prefix client && npm install --prefix compression-service && npm run build --prefix compression-service",
     "start": "npm start --prefix server"
   }
 }

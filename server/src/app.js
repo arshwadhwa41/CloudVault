@@ -1,21 +1,24 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
 import env from "./config/env.js";
 import healthRouter from "./routes/healthRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import fileRouter from "./routes/fileRoutes.js";
 import userRouter from "./routes/userRoutes.js";
-import { fileURLToPath } from "url";
+
 const app = express();
 
-// ES Module mein __dirname setup
-const __dirname = path.resolve();
+// ES Module __dirname setup
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// Middlewares setup
+// Middlewares
 app.use(
   cors({
-    origin: env.clientUrl || "*",
+origin: ["http://localhost:5173", "http://localhost:5001","*"], // Allow both Frontend and Microservice
+    credentials: true,
   })
 );
 
@@ -28,8 +31,8 @@ app.use("/api/files", fileRouter);
 app.use("/api/users", userRouter);
 
 // API Status Route
-app.get("/api", (request, response) => {
-  response.status(200).json({
+app.get("/api", (req, res) => {
+  res.status(200).json({
     success: true,
     message: "Digital Asset API is running",
   });
@@ -39,16 +42,16 @@ app.get("/api", (request, response) => {
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../client/dist")));
 
-  // Express 5 Compatible Catch-All Route (RegExp literal use karke)
-  app.get(/.*/, (req, res, next) => {
+  // Express 5 Safe Middleware Catch-All (No regex path error)
+  app.use((req, res, next) => {
     if (req.path.startsWith("/api")) {
       return next();
     }
-    res.sendFile(path.resolve(__dirname, "../client", "dist", "index.html"));
+    res.sendFile(path.resolve(__dirname, "../client/dist/index.html"));
   });
 } else {
-  app.get("/", (request, response) => {
-    response.status(200).json({
+  app.get("/", (req, res) => {
+    res.status(200).json({
       success: true,
       message: "Digital Asset API is running in Development Mode",
     });
@@ -66,11 +69,11 @@ app.use((req, res) => {
 // Global Error Handler
 app.use((error, req, res, next) => {
   console.error(error);
-
   res.status(500).json({
     success: false,
     message: "Internal server error",
   });
 });
 
+// CRITICAL: Export default lagana zaruri hai
 export default app;

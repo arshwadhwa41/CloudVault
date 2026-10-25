@@ -1,25 +1,44 @@
-# Dependencies
+# ==========================================
+# Dependencies (Root & Sub-services)
+# ==========================================
 node_modules/
 client/node_modules/
 server/node_modules/
+compression-service/node_modules/
+compression-service/client/node_modules/
 
+# ==========================================
 # Environment Variables
+# ==========================================
 .env
 *.env
 client/.env
 server/.env
+compression-service/.env
+compression-service/client/.env
 
-# Server Uploads / Local Media Storage
+# ==========================================
+# Server Uploads & Local Media Storage
+# ==========================================
 server/uploads/*
 !server/uploads/.gitkeep
+compression-service/uploads/*
+!compression-service/uploads/.gitkeep
 
+# ==========================================
 # Build Outputs & Logs
+# ==========================================
 dist/
 build/
+client/dist/
+compression-service/dist/
+compression-service/client/dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# ==========================================
 # System Files
+# ==========================================
 .DS_Store
 Thumbs.db

@@ -12,7 +12,7 @@ import { deleteCloudinaryAsset } from "../services/cloudinaryService.js";
 
 // Gemini AI image auto-tagging helper import kar rahe hain
 
-import { generateImageTags } from "../utils/geminiHelper.js";
+import { generateImageTags } from "../utils/groqHelper.js";
 
 
 // =============================================================
