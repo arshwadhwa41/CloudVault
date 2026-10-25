@@ -7,12 +7,14 @@ const CompressionService = () => {
   // Query Parameters parsing and token synchronization
   // ------------------------------------------------------------
   const queryParams = new URLSearchParams(window.location.search);
-  
+
   const rawFileUrl = queryParams.get("fileUrl");
   const rawFileName = queryParams.get("fileName");
 
-  const cloudFileUrl = rawFileUrl && rawFileUrl !== "undefined" ? rawFileUrl : null;
-  const cloudFileName = rawFileName && rawFileName !== "undefined" ? rawFileName : null;
+  const cloudFileUrl =
+    rawFileUrl && rawFileUrl !== "undefined" ? rawFileUrl : null;
+  const cloudFileName =
+    rawFileName && rawFileName !== "undefined" ? rawFileName : null;
   const urlToken = queryParams.get("token");
 
   // ------------------------------------------------------------
@@ -40,14 +42,17 @@ const CompressionService = () => {
   useEffect(() => {
     if (urlToken) {
       localStorage.setItem("token", urlToken);
-      console.log("Authentication token successfully synced from URL parameters.");
+      console.log(
+        "Authentication token successfully synced from URL parameters.",
+      );
     }
   }, [urlToken]);
 
   // ------------------------------------------------------------
   // Target Filename Resolution
   // ------------------------------------------------------------
-  const hasCloudFile = cloudFileUrl && cloudFileUrl !== "undefined" && cloudFileUrl !== "null";
+  const hasCloudFile =
+    cloudFileUrl && cloudFileUrl !== "undefined" && cloudFileUrl !== "null";
   const targetFileName =
     selectedFile?.name ||
     (hasCloudFile ? cloudFileName : null) ||
@@ -89,7 +94,8 @@ const CompressionService = () => {
         return parsedUrl.toString();
       }
 
-      const knownTransformation = /^(pg_\d+|w_\d+|h_\d+|c_[a-z_]+)(,(pg_\d+|w_\d+|h_\d+|c_[a-z_]+))*$/;
+      const knownTransformation =
+        /^(pg_\d+|w_\d+|h_\d+|c_[a-z_]+)(,(pg_\d+|w_\d+|h_\d+|c_[a-z_]+))*$/;
 
       if (parts.length > 1 && knownTransformation.test(parts[0])) {
         parsedUrl.pathname = prefix + parts.slice(1).join("/");
@@ -124,7 +130,9 @@ const CompressionService = () => {
         const res = await fetch(targetCloudUrl);
 
         if (!res.ok) {
-          throw new Error(`Cloud file download failed (${res.status} ${res.statusText})`);
+          throw new Error(
+            `Cloud file download failed (${res.status} ${res.statusText})`,
+          );
         }
 
         const blob = await res.blob();
@@ -138,12 +146,16 @@ const CompressionService = () => {
         formData.append("file", blob, uploadName);
       }
 
+      const COMPRESSION_API_URL =
+        import.meta.env.VITE_COMPRESSION_API_URL ||
+        "https://cloud-vault-compression-service.onrender.com";
+
       const response = await axios.post(
-        "http://localhost:5001/api/micro/compress",
+        `${COMPRESSION_API_URL}/api/micro/compress`,
         formData,
         {
           responseType: "blob",
-        }
+        },
       );
 
       setCompressedBlob(response.data);
@@ -152,7 +164,9 @@ const CompressionService = () => {
     } catch (err) {
       console.error("Compression Error:", err);
       setIsCompressing(false);
-      alert("Compression failed! Make sure microservice backend on port 5001 is running.");
+      alert(
+        "Compression failed! Make sure microservice backend on port 5001 is running.",
+      );
     }
   };
 
@@ -195,14 +209,18 @@ const CompressionService = () => {
         const cloudFormData = new FormData();
         cloudFormData.append("file", compressedBlob, uploadName);
 
+        const MAIN_API_URL =
+          import.meta.env.VITE_API_URL ||
+          "https://cloud-vault-vpax.onrender.com";
+
         const uploadResponse = await axios.post(
-          "http://localhost:5000/api/files/upload",
+          `${MAIN_API_URL}/api/files/upload`,
           cloudFormData,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         console.log("Cloud Vault Upload Success:", uploadResponse.data);
@@ -210,10 +228,14 @@ const CompressionService = () => {
       } catch (err) {
         console.error("Cloud Vault Upload Error:", err);
         if (err.response) {
-          throw new Error(`Cloud Vault upload failed. Status: ${err.response.status}`);
+          throw new Error(
+            `Cloud Vault upload failed. Status: ${err.response.status}`,
+          );
         }
         if (err.request) {
-          throw new Error("Cloud Vault backend did not respond. Make sure main backend is running on port 5000.");
+          throw new Error(
+            "Cloud Vault backend did not respond. Make sure main backend is running on port 5000.",
+          );
         }
         throw new Error(err.message || "Cloud Vault upload failed.");
       }
@@ -221,13 +243,15 @@ const CompressionService = () => {
 
     let resultMessage = "";
     if (localDownloaded && cloudSaved) {
-      resultMessage = "Compressed file downloaded locally and synchronized with Cloud Vault successfully.";
+      resultMessage =
+        "Compressed file downloaded locally and synchronized with Cloud Vault successfully.";
     } else if (localDownloaded) {
       resultMessage = "Compressed file downloaded locally successfully.";
     } else if (cloudSaved) {
       resultMessage = "Compressed file saved to Cloud Vault successfully.";
     } else {
-      resultMessage = "Compression completed successfully. No output action was selected.";
+      resultMessage =
+        "Compression completed successfully. No output action was selected.";
     }
 
     setShowResultModal(false);
@@ -240,7 +264,9 @@ const CompressionService = () => {
   const onConfirmOptions = async () => {
     try {
       const msg = await handleModalSubmit();
-      setSuccessMessage(msg || "File compressed and stored in Cloud Vault successfully!");
+      setSuccessMessage(
+        msg || "File compressed and stored in Cloud Vault successfully!",
+      );
       setShowSuccessPopup(true);
     } catch (err) {
       console.error("Compression Error:", err);
@@ -252,19 +278,26 @@ const CompressionService = () => {
   // Navigation Handlers
   // ------------------------------------------------------------
   const goToDashboard = () => {
-    window.location.href = "http://localhost:5173";
+    const FRONTEND_URL =
+      import.meta.env.VITE_FRONTEND_URL ||
+      "https://cloud-vault-vpax.onrender.com";
+    window.location.href = FRONTEND_URL;
   };
 
   const goToLogin = () => {
-    window.location.href = "http://localhost:5173/login";
+    const FRONTEND_URL =
+      import.meta.env.VITE_FRONTEND_URL ||
+      "https://cloud-vault-vpax.onrender.com";
+    window.location.href = `${FRONTEND_URL}/login`;
   };
 
   // ------------------------------------------------------------
   // UI Render Layout
   // ------------------------------------------------------------
   return (
-    <div className={`compress-page-wrapper ${isDarkMode ? "dark-theme" : "light-theme"}`}>
-      
+    <div
+      className={`compress-page-wrapper ${isDarkMode ? "dark-theme" : "light-theme"}`}
+    >
       {/* Dynamic Gemini Mesh Background Auras */}
       <div className="gemini-aura-1"></div>
       <div className="gemini-aura-2"></div>
@@ -272,7 +305,6 @@ const CompressionService = () => {
 
       {/* Main Scrollable Wrapper */}
       <div className="compress-scrollable-container">
-
         {/* Top Header Navbar */}
         <header className="dashboard-top-nav">
           <div className="brand-logo-area">
@@ -300,7 +332,9 @@ const CompressionService = () => {
             <span className="promo-badge">Next-Gen Storage Ecosystem</span>
             <h2>Secure, AI-Powered Cloud Storage with Free Generous Quota</h2>
             <p>
-              Experience advanced file compression, zero-knowledge encryption, and intelligent multimodal asset search built for high-performance workflows.
+              Experience advanced file compression, zero-knowledge encryption,
+              and intelligent multimodal asset search built for high-performance
+              workflows.
             </p>
           </div>
           <div className="promo-banner-actions">
@@ -312,17 +346,19 @@ const CompressionService = () => {
 
         {/* Core Microservice Split Workspace */}
         <div className="gemini-card-container">
-
           {/* Left Hero Sidebar */}
           <div className="hero-sidebar">
             <div>
-              <span className="sidebar-badge">Standalone Microservice Node</span>
+              <span className="sidebar-badge">
+                Standalone Microservice Node
+              </span>
               <h1 className="hero-title">
                 Smart File <br />
                 Compression Engine.
               </h1>
               <p className="hero-subtitle">
-                Asynchronously process heavy images, media matrices, and large documents without draining main server bandwidth.
+                Asynchronously process heavy images, media matrices, and large
+                documents without draining main server bandwidth.
               </p>
             </div>
 
@@ -356,28 +392,32 @@ const CompressionService = () => {
                 <div className="preview-card-header">
                   <span className="preview-label">Active Target Asset</span>
                   <span className="preview-status-indicator">
-                    {selectedFile || hasCloudFile ? "Ready for Processing" : "Awaiting Selection"}
+                    {selectedFile || hasCloudFile
+                      ? "Ready for Processing"
+                      : "Awaiting Selection"}
                   </span>
                 </div>
 
                 <div className="preview-card-body">
                   <div className="file-thumbnail-icon">
-                    {selectedFile ? selectedFile.name.split(".").pop().toUpperCase() : "FILE"}
+                    {selectedFile
+                      ? selectedFile.name.split(".").pop().toUpperCase()
+                      : "FILE"}
                   </div>
                   <div className="file-meta-info">
                     <p className="file-name-text">
                       {selectedFile
                         ? selectedFile.name
                         : hasCloudFile
-                        ? cloudFileName
-                        : "No asset loaded in compression buffer"}
+                          ? cloudFileName
+                          : "No asset loaded in compression buffer"}
                     </p>
                     <p className="file-size-text">
                       {selectedFile
                         ? `${(selectedFile.size / 1024).toFixed(2)} KB • Local Buffer`
                         : hasCloudFile
-                        ? "Cloud Vault Synchronized Asset"
-                        : "Select from local system or dashboard"}
+                          ? "Cloud Vault Synchronized Asset"
+                          : "Select from local system or dashboard"}
                     </p>
                   </div>
                 </div>
@@ -402,7 +442,9 @@ const CompressionService = () => {
               disabled={(!selectedFile && !cloudFileUrl) || isCompressing}
               className="compress-action-btn"
             >
-              {isCompressing ? "Executing Deep Compression..." : "Compress Asset Now"}
+              {isCompressing
+                ? "Executing Deep Compression..."
+                : "Compress Asset Now"}
             </button>
           </div>
         </div>
@@ -412,20 +454,28 @@ const CompressionService = () => {
           <div className="trust-card">
             <div className="trust-icon-box">AI</div>
             <h3>Intelligent Vision Indexing</h3>
-            <p>Automated content analysis and deep contextual asset categorization powered by Google Gemini.</p>
+            <p>
+              Automated content analysis and deep contextual asset
+              categorization powered by Google Gemini.
+            </p>
           </div>
           <div className="trust-card">
             <div className="trust-icon-box">SEC</div>
             <h3>Military-Grade Encryption</h3>
-            <p>End-to-end cryptographic security ensuring complete confidentiality for all uploaded files.</p>
+            <p>
+              End-to-end cryptographic security ensuring complete
+              confidentiality for all uploaded files.
+            </p>
           </div>
           <div className="trust-card">
             <div className="trust-icon-box">CDN</div>
             <h3>Lightning-Fast Delivery</h3>
-            <p>Global edge distribution networks delivering instantaneous media preview and download speeds.</p>
+            <p>
+              Global edge distribution networks delivering instantaneous media
+              preview and download speeds.
+            </p>
           </div>
         </div>
-
       </div>
 
       {/* ======================================================
@@ -437,7 +487,8 @@ const CompressionService = () => {
             <div className="modal-header-icon success-check">✓</div>
             <h2 className="modal-title-text">Compression Completed</h2>
             <p className="modal-desc-text">
-              Select your preferred output handling parameters for the optimized asset.
+              Select your preferred output handling parameters for the optimized
+              asset.
             </p>
 
             <div className="modal-options-bg">
@@ -483,7 +534,6 @@ const CompressionService = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
