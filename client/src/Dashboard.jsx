@@ -1061,7 +1061,6 @@ function DashBoard({ user: initialUser, onLogout }) {
                     }
 
                     // 3. CLOUDINARY RAW URL CLEANUP FIX:
-                    // Agar file RAW (PDF, Video, TXT) hai, toh url me se pg_1,w_300,h_200,c_fill etc. remove karo
                     let cleanFileUrl = rawFileUrl;
                     if (cleanFileUrl.includes("/raw/upload/")) {
                       cleanFileUrl = cleanFileUrl.replace(
@@ -1070,8 +1069,12 @@ function DashBoard({ user: initialUser, onLogout }) {
                       );
                     }
 
-                    // 4. Token & Cleaned URL ke sath microservice URL construct karo
-                    const microserviceUrl = `http://localhost:5001/?fileUrl=${encodeURIComponent(
+                    // 4. Live Render Microservice URL
+                    const COMPRESSION_SERVICE_URL =
+                      import.meta.env.VITE_COMPRESSION_SERVICE_URL ||
+                      "https://cloud-vault-compression-service.onrender.com";
+
+                    const microserviceUrl = `${COMPRESSION_SERVICE_URL}/?fileUrl=${encodeURIComponent(
                       cleanFileUrl,
                     )}&fileName=${encodeURIComponent(fileName)}&token=${encodeURIComponent(token)}`;
 
