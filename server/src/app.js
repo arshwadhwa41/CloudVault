@@ -15,11 +15,31 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Middlewares
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5001",
+  "https://cloud-vault-compression-service.onrender.com",
+  "https://cloud-vault-vpax.onrender.com",
+];
+
 app.use(
   cors({
-origin: ["http://localhost:5173", "http://localhost:5001","*"], // Allow both Frontend and Microservice
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like Postman, mobile apps, or curl)
+      if (!origin) return callback(null, true);
+
+      // Allow if origin is in explicit list OR is a render subdomain
+      if (
+        allowedOrigins.indexOf(origin) !== -1 ||
+        origin.endsWith(".onrender.com")
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-  })
+  }),
 );
 
 app.use(express.json());

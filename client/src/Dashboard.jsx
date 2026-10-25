@@ -1077,8 +1077,8 @@ function DashBoard({ user: initialUser, onLogout }) {
                     const microserviceUrl = `${COMPRESSION_SERVICE_URL}/?fileUrl=${encodeURIComponent(
                       cleanFileUrl,
                     )}&fileName=${encodeURIComponent(fileName)}&token=${encodeURIComponent(token)}`;
-
-                    window.location.href = microserviceUrl;
+                    // Naye tab mein kholne ke liye window.open use karein
+                    window.open(microserviceUrl, "_blank");
                   }}
                   className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2"
                 >
