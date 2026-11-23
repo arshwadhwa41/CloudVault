@@ -23,7 +23,7 @@ export default function CloudVaultWorkspace() {
   const handleAuthRedirect = (mode) => {
     const targetUrl = new URL(authRedirectUrl);
     targetUrl.searchParams.set('auth', mode);
-    window.location.href = targetUrl.toString();
+    window.open(targetUrl.toString(), '_blank', 'noopener,noreferrer');
   };
 
   // Component load hone par purana session reset kar rahe hain
