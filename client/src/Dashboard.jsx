@@ -1134,7 +1134,7 @@ function DashBoard({ user: initialUser, onLogout }) {
 
                     const RAG_SERVICE_URL =
                       import.meta.env.VITE_RAG_SERVICE_URL ||
-                      "https://cloud-vault-rag-service.onrender.com";
+                      "https://cloudvault-rag.onrender.com";
 
                     const ragUrl = `${RAG_SERVICE_URL}/?fileUrl=${encodeURIComponent(
                       cleanFileUrl,
