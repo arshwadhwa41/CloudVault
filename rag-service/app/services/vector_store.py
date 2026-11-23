@@ -1,7 +1,35 @@
 import os
+import requests
 import chromadb
-from chromadb.utils import embedding_functions
+from chromadb import Documents, EmbeddingFunction, Embeddings
 from app.config import settings
+
+
+class HFInferenceEmbeddingFunction(EmbeddingFunction[Documents]):
+    def __init__(self, api_key: str, model_name: str = "BAAI/bge-base-en-v1.5"):
+        self.api_key = api_key
+        self.model_name = model_name
+        self.api_url = f"https://api-inference.huggingface.co/pipeline/feature-extraction/{self.model_name}"
+
+    def __call__(self, input: Documents) -> Embeddings:
+        headers = {"Authorization": f"Bearer {self.api_key}"} if self.api_key else {}
+        response = requests.post(
+            self.api_url,
+            headers=headers,
+            json={"inputs": list(input), "options": {"wait_for_model": True}},
+            timeout=60,
+        )
+        response.raise_for_status()
+        data = response.json()
+
+        # Agar single string ke liye 2D list aaye ya batch ke liye 3D list aaye toh normalize kar rahe hain
+        if isinstance(data, list) and data and isinstance(data[0], list) and data[0] and isinstance(data[0][0], list):
+            return [
+                [sum(col) / len(col) for col in zip(*token_embs)]
+                for token_embs in data
+            ]
+        return data
+
 
 class VectorStoreService:
     def __init__(self):
@@ -11,9 +39,10 @@ class VectorStoreService:
         # Collection name constant define kar diya hai
         self.collection_name = "cloudvault_docs"
         
-        # 100% free local embedding model (Sentence Transformers) load kar rahe hain
-        self.embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-            model_name="all-MiniLM-L6-v2"
+        # HuggingFace Inference API embedding model (BAAI/bge-base-en-v1.5, 512 tokens)
+        self.embedding_fn = HFInferenceEmbeddingFunction(
+            api_key=getattr(settings, "HF_API_KEY", None) or os.getenv("HF_API_KEY", ""),
+            model_name="BAAI/bge-base-en-v1.5"
         )
         
         # CloudVault ke liye collection get ya create kar rahe hain
@@ -65,6 +94,7 @@ class VectorStoreService:
         except Exception as e:
             print(f"Reset error: {str(e)}")
             return False
+
 
 # Global instance export kar rahe hain taaki routes mein seedha use ho sake
 vector_store = VectorStoreService()
