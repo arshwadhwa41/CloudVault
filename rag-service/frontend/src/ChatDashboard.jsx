@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { FiPlus, FiSend, FiSun, FiMoon, FiCpu } from 'react-icons/fi';
 import ReactMarkdown from 'react-markdown';
@@ -17,6 +16,15 @@ export default function CloudVaultWorkspace() {
 
   // File input ko programmatically access karne ke liye ref
   const fileInputRef = useRef(null);
+
+  // Login aur Sign Up ke liye target redirect URL
+  const authRedirectUrl = 'https://cloud-vault-vpax.onrender.com/';
+
+  const handleAuthRedirect = (mode) => {
+    const targetUrl = new URL(authRedirectUrl);
+    targetUrl.searchParams.set('auth', mode);
+    window.location.href = targetUrl.toString();
+  };
 
   // Component load hone par purana session reset kar rahe hain
   useEffect(() => {
@@ -300,8 +308,20 @@ export default function CloudVaultWorkspace() {
 
           <div className="divider" />
 
-          <button className="nav-btn-outline">Login</button>
-          <button className="nav-btn-primary">Sign Up</button>
+          <button
+            type="button"
+            className="nav-btn-outline"
+            onClick={() => handleAuthRedirect('login')}
+          >
+            Login
+          </button>
+          <button
+            type="button"
+            className="nav-btn-primary"
+            onClick={() => handleAuthRedirect('signup')}
+          >
+            Sign Up
+          </button>
         </div>
       </header>
 
