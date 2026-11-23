@@ -1022,7 +1022,7 @@ function DashBoard({ user: initialUser, onLogout }) {
                   MB
                 </span>
 
-                <button
+<button
                   onClick={() => {
                     console.log("Full Preview File Object:", previewFile);
 
@@ -1081,7 +1081,35 @@ function DashBoard({ user: initialUser, onLogout }) {
                     // Naye tab mein kholne ke liye window.open use karein
                     window.open(microserviceUrl, "_blank");
                   }}
-                  className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2"
+                  style={{
+                    backgroundColor: "#5c6bf2",
+                    color: "#ffffff",
+                    borderRadius: "10px",
+                    padding: "10px 22px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    lineHeight: "1.2",
+                    letterSpacing: "0.01em",
+                    border: "none",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 12px rgba(92, 107, 242, 0.28)",
+                    transition: "background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#4c5be6";
+                    e.currentTarget.style.boxShadow = "0 6px 16px rgba(76, 91, 230, 0.35)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#5c6bf2";
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(92, 107, 242, 0.28)";
+                  }}
+                  onMouseDown={(e) => {
+                    e.currentTarget.style.transform = "scale(0.98)";
+                  }}
+                  onMouseUp={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                  className="text-white font-semibold flex items-center justify-center gap-2"
                 >
                   Compress File
                 </button>
@@ -1142,7 +1170,35 @@ function DashBoard({ user: initialUser, onLogout }) {
 
                     window.open(ragUrl, "_blank");
                   }}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2"
+                  style={{
+                    backgroundColor: "#5c6bf2",
+                    color: "#ffffff",
+                    borderRadius: "10px",
+                    padding: "10px 22px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    lineHeight: "1.2",
+                    letterSpacing: "0.01em",
+                    border: "none",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 12px rgba(92, 107, 242, 0.28)",
+                    transition: "background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#4c5be6";
+                    e.currentTarget.style.boxShadow = "0 6px 16px rgba(76, 91, 230, 0.35)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#5c6bf2";
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(92, 107, 242, 0.28)";
+                  }}
+                  onMouseDown={(e) => {
+                    e.currentTarget.style.transform = "scale(0.98)";
+                  }}
+                  onMouseUp={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                  className="text-white font-semibold flex items-center justify-center gap-2"
                 >
                 Chat With AI
                 </button>
