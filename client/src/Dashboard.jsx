@@ -1021,6 +1021,7 @@ function DashBoard({ user: initialUser, onLogout }) {
                   Size: {((previewFile.size || 0) / (1024 * 1024)).toFixed(2)}{" "}
                   MB
                 </span>
+
                 <button
                   onClick={() => {
                     console.log("Full Preview File Object:", previewFile);
@@ -1084,6 +1085,68 @@ function DashBoard({ user: initialUser, onLogout }) {
                 >
                   Compress File
                 </button>
+
+                <button
+                  onClick={() => {
+                    console.log("Full Preview File Object:", previewFile);
+
+                    if (!previewFile) {
+                      alert("Please select a file first.");
+                      return;
+                    }
+
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                      alert(
+                        "Authentication token missing. Please login again.",
+                      );
+                      return;
+                    }
+
+                    let rawFileUrl =
+                      previewFile.url ||
+                      previewFile.fileUrl ||
+                      previewFile.filePath ||
+                      previewFile.path ||
+                      previewFile.secure_url ||
+                      "";
+
+                    const fileName =
+                      previewFile.name ||
+                      previewFile.fileName ||
+                      previewFile.originalName ||
+                      previewFile.filename ||
+                      "uploaded-file";
+
+                    if (!rawFileUrl) {
+                      alert("File URL is missing from previewFile object!");
+                      return;
+                    }
+
+                    // Cloudinary raw URL cleanup (same reliable logic)
+                    let cleanFileUrl = rawFileUrl;
+                    if (cleanFileUrl.includes("/raw/upload/")) {
+                      cleanFileUrl = cleanFileUrl.replace(
+                        /\/raw\/upload\/.*?\/(v\d+\/)/,
+                        "/raw/upload/$1",
+                      );
+                    }
+
+                    const RAG_SERVICE_URL =
+                      import.meta.env.VITE_RAG_SERVICE_URL ||
+                      "https://cloud-vault-rag-service.onrender.com";
+
+                    const ragUrl = `${RAG_SERVICE_URL}/?fileUrl=${encodeURIComponent(
+                      cleanFileUrl,
+                    )}&fileName=${encodeURIComponent(fileName)}&token=${encodeURIComponent(token)}`;
+
+                    window.open(ragUrl, "_blank");
+                  }}
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2"
+                >
+                Chat With AI
+                </button>
+
                 <div className="modal-buttons-group">
                   <button
                     className="modal-share-btn"

@@ -6,6 +6,8 @@ client/node_modules/
 server/node_modules/
 compression-service/node_modules/
 compression-service/client/node_modules/
+rag-service/venv/
+rag-service/.venv/
 
 # ==========================================
 # Environment Variables
@@ -16,23 +18,30 @@ client/.env
 server/.env
 compression-service/.env
 compression-service/client/.env
+rag-service/.env
 
 # ==========================================
-# Server Uploads & Local Media Storage
+# Server Uploads, Vector DB & Local Media Storage
 # ==========================================
 server/uploads/*
 !server/uploads/.gitkeep
 compression-service/uploads/*
 !compression-service/uploads/.gitkeep
+rag-service/chroma_db/
+rag-service/temp_files/
 
 # ==========================================
-# Build Outputs & Logs
+# Build Outputs, Cache & Logs
 # ==========================================
 dist/
 build/
 client/dist/
 compression-service/dist/
 compression-service/client/dist/
+rag-service/frontend/dist/
+__pycache__/
+*.py[cod]
+*$py.class
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

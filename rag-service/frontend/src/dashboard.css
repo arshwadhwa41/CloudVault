@@ -1,0 +1,372 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-border: rgba(226, 232, 240, 0.9);
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --navbar-bg: rgba(255, 255, 255, 0.8);
+  --input-bg: rgba(255, 255, 255, 0.9);
+  --ai-card-bg: rgba(255, 255, 255, 0.85);
+  --accent-purple: #9b51e0;
+}
+
+[data-theme='dark'] {
+  --bg-color: #090d16;
+  --card-bg: rgba(19, 27, 46, 0.75);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --navbar-bg: rgba(19, 27, 46, 0.6);
+  --input-bg: rgba(19, 27, 46, 0.85);
+  --ai-card-bg: rgba(19, 27, 46, 0.75);
+}
+
+.gemini-app-container {
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.gemini-app-container * {
+  box-sizing: border-box;
+}
+
+/* Background Mesh Gradients */
+.mesh-gradient-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  filter: blur(80px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.gradient-blob {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.blob-1 { width: 500px; height: 500px; background: rgba(66, 133, 244, 0.25); top: -10%; left: -10%; }
+.blob-2 { width: 600px; height: 600px; background: rgba(155, 81, 224, 0.25); top: 20%; right: -10%; }
+.blob-3 { width: 500px; height: 500px; background: rgba(234, 67, 53, 0.15); bottom: -10%; left: 20%; }
+
+/* Navbar */
+.gemini-navbar-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--card-border);
+  width: 100%;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #6366f1, #9b51e0);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(155, 81, 224, 0.3);
+}
+
+.navbar-brand h1 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-brand .badge {
+  font-size: 10px;
+  background: rgba(155, 81, 224, 0.15);
+  color: var(--accent-purple);
+  border: 1px solid rgba(155, 81, 224, 0.3);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.navbar-brand p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.icon-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.icon-btn:hover { opacity: 0.8; }
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: var(--card-border);
+}
+
+.nav-btn-outline {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nav-btn-primary {
+  background: linear-gradient(135deg, #6366f1, #9b51e0);
+  border: none;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(155, 81, 224, 0.3);
+}
+
+/* Dashboard Layout */
+.dashboard-wrapper {
+  position: relative;
+  z-index: 5;
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 30px 20px 140px;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 80px);
+  justify-content: space-between;
+}
+
+.chat-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.welcome-banner {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.welcome-banner h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 6px;
+}
+
+.welcome-banner p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Message Rows */
+.message-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.user-row { justify-content: flex-end; }
+.ai-row { justify-content: flex-start; }
+
+.user-bubble {
+  background: linear-gradient(135deg, #6366f1, #9b51e0);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 16px 16px 2px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(155, 81, 224, 0.2);
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: #cbd5e1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #0f172a;
+  border: 1px solid var(--card-border);
+}
+
+.ai-avatar {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #6366f1, #9b51e0);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(155, 81, 224, 0.3);
+}
+
+/* AI Message Box */
+.chat-message-ai {
+  background: var(--ai-card-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 22px 26px;
+  color: var(--text-main);
+  font-size: 14px;
+  line-height: 1.7;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.chat-message-ai h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 16px 0 8px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 4px;
+}
+
+.chat-message-ai ul {
+  padding-left: 18px;
+  margin: 8px 0;
+}
+
+.chat-message-ai li {
+  margin-bottom: 6px;
+  color: var(--text-muted);
+}
+
+.chat-message-ai strong {
+  color: var(--text-main);
+}
+
+/* Floating Input Box */
+.floating-input-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 750px;
+  padding: 0 20px;
+  z-index: 100;
+}
+
+.input-card {
+  background: var(--input-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.chat-add-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.chat-add-btn:hover { color: var(--text-main); }
+
+.input-card input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-size: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.input-card input::placeholder {
+  color: var(--text-muted);
+}
+
+.chat-send-btn {
+  background: linear-gradient(135deg, #6366f1, #9b51e0);
+  border: none;
+  color: #fff;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(155, 81, 224, 0.4);
+  transition: 0.2s;
+}
+
+.chat-send-btn:hover { opacity: 0.9; }
+
+.footer-note {
+  font-size: 11px;
+  text-align: center;
+  color: var(--text-muted);
+  margin-top: 10px;
+}
